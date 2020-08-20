@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect }  from 'react';
+import './App.scss';
 
 function App() {
+  const [ticketss, setTickets] = useState({tickets: [], stop: false});
+
+  async function fetchSearchId() {
+    const searchIdResponse = await fetch("https://front-test.beta.aviasales.ru/search");
+    return (await searchIdResponse.json())['searchId'];
+  }
+
+
+  async function fetchTickets(searchId: string) {
+    const ticketsResponse = await fetch(`https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`)
+    const tickets = await ticketsResponse.json();
+    setTickets(tickets)
+    console.log(ticketss)
+  }
+
+  useEffect(() => {
+    fetchSearchId().then(searchId => {
+      fetchTickets(searchId);
+    })
+  }, [])
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {ticketss.stop}
     </div>
   );
 }
