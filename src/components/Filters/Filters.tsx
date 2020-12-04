@@ -42,7 +42,7 @@ const Filters = ({filters, handleChange}: Props) => {
 
     return (
         <div className={s.filters}>
-           <h4>Количество пересадок</h4>
+           <h4 className={s.filtersTitle}>Количество пересадок</h4>
            {initFilters.map((filter, index) => 
                 <div key={index}>
                     <label>

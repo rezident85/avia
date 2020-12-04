@@ -71,50 +71,52 @@ function App() {
   const [currentSort, setSort] = useState<'fast' | 'cheap'>('cheap');
 
   useEffect(() => {
-    let newTickets: Ticket[] = [];
+    let filteredSortedTickets: Ticket[] = [];
 
     if (!filters.includes('all')) {
-      newTickets = ticketsResponse.tickets.filter(ticket => {
+      filteredSortedTickets = ticketsResponse.tickets.filter(ticket => {
         return filters.includes(ticket.segments[0].stops.length) && filters.includes(ticket.segments[1].stops.length);
       })
     } else {
-      newTickets = ticketsResponse.tickets;
+      filteredSortedTickets = ticketsResponse.tickets;
     }
     
     if (currentSort === "cheap") {
-      newTickets = [...newTickets].sort((a, b) => {
+      filteredSortedTickets = [...filteredSortedTickets].sort((a, b) => {
         return a.price - b.price;
       })
     } else {
-      newTickets = [...newTickets].sort((a, b) => {
+      filteredSortedTickets = [...filteredSortedTickets].sort((a, b) => {
         return (a.segments[0].duration + a.segments[1].duration) - (b.segments[0].duration + b.segments[1].duration)
       })
     };
 
-    setTickets(newTickets);
+    setTickets(filteredSortedTickets);
   }, [currentSort, filters, ticketsResponse])
 
 
   return (
     <div className="App">
       {ticketsResponse.stop &&
-        <h3>
-          <SortTabs handleChange={(sort) => setSort(sort)} currentSort={currentSort} />
+        <div className="row">
           <Filters handleChange={(filters) => setFilters(filters)} filters={filters}/>
-          {tickets.map((ticket, index) => 
-            <div key={index}>
-              <div>цена - {ticket.price}</div>
-              <div>время - {ticket.segments[0].duration + ticket.segments[1].duration}</div>
-              <div>
-                Пересадки Туда- {ticket.segments[0].stops.toString()}
+          <div className="col">
+            <SortTabs handleChange={(sort) => setSort(sort)} currentSort={currentSort} />
+            {tickets.map((ticket, index) => 
+              <div key={index}>
+                <div>цена - {ticket.price}</div>
+                <div>время - {ticket.segments[0].duration + ticket.segments[1].duration}</div>
+                <div>
+                  Пересадки Туда- {ticket.segments[0].stops.toString()}
+                  <br/>
+                  Пересадки Обратно - {ticket.segments[1].stops.toString()}
+                </div>
                 <br/>
-                Пересадки Обратно - {ticket.segments[1].stops.toString()}
+                <br/>
               </div>
-              <br/>
-              <br/>
-            </div>
-          )}
-        </h3>
+            )}
+          </div>
+        </div>
       }
       {!ticketsResponse.stop &&
        <div>ЗАГРУЗКА....</div>
