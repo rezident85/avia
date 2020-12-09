@@ -2,8 +2,9 @@ import React, { useState, useEffect }  from 'react';
 import './App.scss';
 import SortTabs from './components/SortTabs/SortTabs';
 import Filters from './components/Filters/Filters';
+import Ticket from './components/Ticket/Ticket';
 
- type Ticket = {
+ export type TicketType = {
   // Цена в рублях
   price: number
   // Код авиакомпании (iata)
@@ -42,7 +43,7 @@ export type FiltersType = (number | string)[];
 
 function App() {
   const [ticketsResponse, setTicketsResponse] = useState<{
-    tickets: Ticket[];
+    tickets: TicketType[];
     stop: boolean;
   }>({tickets: [], stop: false});
 
@@ -66,12 +67,12 @@ function App() {
       fetchTickets();
   }, [])
 
-  const [tickets, setTickets] = useState<Ticket[]>(ticketsResponse.tickets);
+  const [tickets, setTickets] = useState<TicketType[]>(ticketsResponse.tickets);
   const [filters, setFilters] = useState<FiltersType>(['all']);
   const [currentSort, setSort] = useState<'fast' | 'cheap'>('cheap');
 
   useEffect(() => {
-    let filteredSortedTickets: Ticket[] = [];
+    let filteredSortedTickets: TicketType[] = [];
 
     if (!filters.includes('all')) {
       filteredSortedTickets = ticketsResponse.tickets.filter(ticket => {
@@ -103,17 +104,7 @@ function App() {
           <div className="col">
             <SortTabs handleChange={(sort) => setSort(sort)} currentSort={currentSort} />
             {tickets.map((ticket, index) => 
-              <div key={index}>
-                <div>цена - {ticket.price}</div>
-                <div>время - {ticket.segments[0].duration + ticket.segments[1].duration}</div>
-                <div>
-                  Пересадки Туда- {ticket.segments[0].stops.toString()}
-                  <br/>
-                  Пересадки Обратно - {ticket.segments[1].stops.toString()}
-                </div>
-                <br/>
-                <br/>
-              </div>
+              <Ticket ticket={ticket} key={index} />
             )}
           </div>
         </div>
