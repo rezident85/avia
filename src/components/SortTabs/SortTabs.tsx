@@ -7,21 +7,23 @@ export interface Props {
     handleChange: (sort: 'fast' | 'cheap') => void;
 }
 
-const SortTabs = ({handleChange, currentSort}: Props) => {
+const SortTabs = ({ handleChange, currentSort }: Props) => {
 
     return (
         <div className={s.tabs}>
-            <div className={cn({ [s.tab] : true,
-                                [s.active] : currentSort === 'cheap', 
-                                })}
-                 onClick={() => handleChange('cheap')}
+            <div className={cn({
+                [s.tab]: true,
+                [s.active]: currentSort === 'cheap',
+            })}
+                onClick={() => handleChange('cheap')}
             >
                 Самый дешевый
             </div>
-            <div className={cn({ [s.tab] : true,
-                                [s.active] : currentSort === 'fast', 
-                                })}
-                  onClick={() => handleChange('fast')}
+            <div className={cn({
+                [s.tab]: true,
+                [s.active]: currentSort === 'fast',
+            })}
+                onClick={() => handleChange('fast')}
             >
                 Самый быстрый
             </div>

@@ -2,14 +2,14 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
+.Applogo {
+  height: 10vmin;
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+  .Applogo {
+    animation: App-logo-spin infinite 2s linear;
   }
 }
 
@@ -26,6 +26,11 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.4;
 }
 
 .row {

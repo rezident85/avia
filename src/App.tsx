@@ -1,10 +1,12 @@
-import React, { useState, useEffect }  from 'react';
-import './App.scss';
+import React, { useState, useEffect } from 'react';
+import s from './App.module.scss';
+import logo from './logo.svg';
+import cn from "classnames"
 import SortTabs from './components/SortTabs/SortTabs';
 import Filters from './components/Filters/Filters';
 import Ticket from './components/Ticket/Ticket';
 
- export type TicketType = {
+export type TicketType = {
   // Цена в рублях
   price: number
   // Код авиакомпании (iata)
@@ -45,12 +47,12 @@ function App() {
   const [ticketsResponse, setTicketsResponse] = useState<{
     tickets: TicketType[];
     stop: boolean;
-  }>({tickets: [], stop: false});
+  }>({ tickets: [], stop: false });
 
   async function fetchTickets() {
     const searchIdResponse = await fetch("https://front-test.beta.aviasales.ru/search");
     const searchId = (await searchIdResponse.json())['searchId'];
-  
+
     while (true) {
       const ticketResponse = await fetch(`https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`);
       if (ticketResponse.ok) {
@@ -64,7 +66,7 @@ function App() {
   }
 
   useEffect(() => {
-      fetchTickets();
+    fetchTickets();
   }, [])
 
   const [tickets, setTickets] = useState<TicketType[]>(ticketsResponse.tickets);
@@ -81,7 +83,7 @@ function App() {
     } else {
       filteredSortedTickets = ticketsResponse.tickets;
     }
-    
+
     if (currentSort === "cheap") {
       filteredSortedTickets = [...filteredSortedTickets].sort((a, b) => {
         return a.price - b.price;
@@ -97,21 +99,22 @@ function App() {
 
 
   return (
-    <div className="App">
-      {ticketsResponse.stop &&
-        <div className="row">
-          <Filters handleChange={(filters) => setFilters(filters)} filters={filters}/>
-          <div className="col">
-            <SortTabs handleChange={(sort) => setSort(sort)} currentSort={currentSort} />
-            {tickets.map((ticket, index) => 
-              <Ticket ticket={ticket} key={index} />
-            )}
-          </div>
+    <div className={s.App}>
+      <div className={cn({
+        [s.row]: true,
+        [s.disabled]: !ticketsResponse.stop,
+      })}>
+        <Filters handleChange={(filters) => setFilters(filters)} filters={filters} />
+        <div className={s.col}>
+          <SortTabs handleChange={(sort) => setSort(sort)} currentSort={currentSort} />
+          {ticketsResponse.stop && tickets.map((ticket, index) =>
+            <Ticket ticket={ticket} key={index} />
+          )}
+          {!ticketsResponse.stop &&
+            <img src={logo} className={s.Applogo} alt="logo" />
+          }
         </div>
-      }
-      {!ticketsResponse.stop &&
-       <div>ЗАГРУЗКА....</div>
-      }
+      </div>
     </div>
   );
 }
